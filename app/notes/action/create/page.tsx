@@ -1,7 +1,13 @@
-import css from './CreateNote.module.css';
-import NoteFormWrapper from './NoteFormWrapper';
 import { Metadata } from 'next';
+import dynamicImport from 'next/dynamic';
+import css from './CreateNote.module.css';
 
+// Динамічний імпорт клієнтського компонента
+const NoteFormWrapper = dynamicImport(() => import('./NoteFormWrapper'), {
+  ssr: false,
+});
+
+// SEO мета-дані
 export const metadata: Metadata = {
   title: 'Create',
   description: 'Creating new note',
@@ -20,6 +26,7 @@ export const metadata: Metadata = {
   },
 };
 
+// Вказуємо, що сторінка динамічна
 export const dynamic = 'force-dynamic';
 
 export default function CreateNotePage() {
@@ -27,7 +34,7 @@ export default function CreateNotePage() {
     <main className={css.main}>
       <div className={css.container}>
         <h1 className={css.title}>Create note</h1>
-        <NoteFormWrapper />
+        <NoteFormWrapper onClose={() => { /* Можна вставити navigate або close-модал */ }} />
       </div>
     </main>
   );
