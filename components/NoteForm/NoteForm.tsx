@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "@/lib/api";
-import { useRouter } from "next/navigation";
 import { useNoteStore } from "@/lib/store/noteStore";
 import { CreateNote, TagType } from "@/types/note";
 import css from "./NoteForm.module.css";
 
-export default function NoteForm() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const onClose = () => router.back();
+type NoteFormProps = {
+  onClose: () => void;
+};
 
+export default function NoteForm({ onClose }: NoteFormProps) {
+  const queryClient = useQueryClient();
   const { draft, setDraft, clearDraft } = useNoteStore();
 
   const [errors, setErrors] = useState<
@@ -24,7 +24,7 @@ export default function NoteForm() {
     onSuccess: () => {
       queryClient.invalidateQueries();
       clearDraft();
-      onClose();
+      onClose(); // Тепер використовуємо переданий проп
     },
     onError: (error) => {
       console.error("Failed to create note:", error);
@@ -35,7 +35,7 @@ export default function NoteForm() {
   const handleChange = (
     event: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     const { name, value } = event.target;
     setDraft({ ...draft, [name]: value });
