@@ -9,22 +9,22 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = slug[0] === "All" ? undefined : slug[0];
-  const categotyKind = category || "All";
-  const pageUrl = `https://08-zustand-lyart.vercel.app/notes/filter/{slug}/${categotyKind}`;
+  const categoryKind = category || "All";
+  const pageUrl = `https://08-zustand-lyart.vercel.app/notes/filter/${slug.join("/")}`;
 
   return {
-    title: `${category ? `${category}` : "All notes"}`,
-    description: `Filtered by ${category || "All notes"}`,
+    title: `${categoryKind} notes`,
+    description: `Filtered by ${categoryKind}`,
     openGraph: {
-      title: `${category ? `${category}` : "All notes"}`,
-      description: `Filtered by ${category || "All notes"}`,
+      title: `${categoryKind} notes`,
+      description: `Filtered by ${categoryKind}`,
       url: pageUrl,
       images: [
         {
           url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
           width: 1200,
           height: 630,
-          alt: `${category ? `${category}` : "All notes"}`,
+          alt: `${categoryKind} notes`,
         },
       ],
     },

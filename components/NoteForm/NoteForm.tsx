@@ -1,17 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createNote } from "@/lib/api";
 import { useNoteStore } from "@/lib/store/noteStore";
 import { CreateNote, TagType } from "@/types/note";
 import css from "./NoteForm.module.css";
 
-type NoteFormProps = {
-  onClose: () => void;
-};
-
-export default function NoteForm({ onClose }: NoteFormProps) {
+export default function NoteForm() {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { draft, setDraft, clearDraft } = useNoteStore();
 
@@ -22,9 +20,9 @@ export default function NoteForm({ onClose }: NoteFormProps) {
   const { mutate, isPending } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({ queryKey: ["notes"] });
       clearDraft();
-      onClose(); // Тепер використовуємо переданий проп
+      router.push("/notes"); // Переходимо на список нотаток
     },
     onError: (error) => {
       console.error("Failed to create note:", error);
@@ -73,6 +71,7 @@ export default function NoteForm({ onClose }: NoteFormProps) {
       content: formData.get("content") as string,
       tag: formData.get("tag") as TagType,
     };
+
     mutate(newNote);
   };
 
@@ -124,7 +123,11 @@ export default function NoteForm({ onClose }: NoteFormProps) {
       </div>
 
       <div className={css.actions}>
-        <button onClick={onClose} type="button" className={css.cancelButton}>
+        <button
+          type="button"
+          className={css.cancelButton}
+          onClick={() => router.push("/notes")}
+        >
           Cancel
         </button>
         <button type="submit" className={css.submitButton} disabled={isPending}>
