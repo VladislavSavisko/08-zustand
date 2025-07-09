@@ -8,7 +8,12 @@ import { useNoteStore } from "@/lib/store/noteStore";
 import { CreateNote, TagType } from "@/types/note";
 import css from "./NoteForm.module.css";
 
-export default function NoteForm() {
+// 👇 Додаємо тип для пропсів
+type NoteFormProps = {
+  onClose?: () => void;
+};
+
+export default function NoteForm({ onClose }: NoteFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { draft, setDraft, clearDraft } = useNoteStore();
@@ -22,7 +27,7 @@ export default function NoteForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       clearDraft();
-      router.push("/notes"); // Переходимо на список нотаток
+      router.push("/notes"); // Якщо хочеш — можна замінити на onClose?.()
     },
     onError: (error) => {
       console.error("Failed to create note:", error);
@@ -126,7 +131,14 @@ export default function NoteForm() {
         <button
           type="button"
           className={css.cancelButton}
-          onClick={() => router.push("/notes")}
+          // 👇 Використовуємо onClose, якщо він переданий
+          onClick={() => {
+            if (onClose) {
+              onClose();
+            } else {
+              router.push("/notes");
+            }
+          }}
         >
           Cancel
         </button>
