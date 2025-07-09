@@ -1,3 +1,5 @@
+'use client';
+
 import { useId } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Formik, Field, Form, ErrorMessage } from "formik";
