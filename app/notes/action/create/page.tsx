@@ -1,3 +1,5 @@
+'use client';
+
 import { Metadata } from 'next';
 import dynamicImport from 'next/dynamic';
 import css from './CreateNote.module.css';
